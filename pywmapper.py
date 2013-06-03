@@ -6,9 +6,10 @@ from bs4 import BeautifulSoup
 from collections import deque
 
 url = "test url"
-maxDepth = 2
+maxDepth = 1
 
 queue = deque([(url, 0)])
+info = {}
 visited = []
 
 def qtl(queue):
@@ -19,7 +20,7 @@ while queue:
   url, depth = queue.popleft()
   print depth, "Visiting: ", url
   visited.append(url);
-  depth += 1
+  info[url] = {}
   try:
     response = urllib2.urlopen(url)
   except urllib2.HTTPError as e:
@@ -29,7 +30,10 @@ while queue:
 
   if depth >= maxDepth:
     continue
-  for link in html.find_all('a'):
+  info[url]['src'] = html
+  info[url]['img'] = html.find_all('img')
+  info[url]['a'] = html.find_all('a')
+  for link in info[url]['a']:
     if not link.get('href'):
       continue
     href = fullPath(url, link.get('href'));
