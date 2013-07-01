@@ -5,6 +5,7 @@ from validator import fullPath
 from bs4 import BeautifulSoup
 from argparse import ArgumentParser
 from collections import deque
+from writer import writer
 import sys
 
 
@@ -15,6 +16,7 @@ def qtl(queue):
   return map(lambda x: x[0], queue)
 
 def run(options):
+  output = writer(options)
   maxDepth = options.depth
   queue = deque([(options.target, 0)])
   info = {}
@@ -23,14 +25,14 @@ def run(options):
   while queue:
     url, depth = queue.popleft()
     if options.verbose == True:
-      print depth, "Visiting: ", url
+      output(depth + " Visiting: " + url + '\n')
     visited.append(url);
     info[url] = {}
     try:
       response = urllib2.urlopen(url)
     except urllib2.HTTPError as e:
       if options.verbose == True:
-        print "({0}): {1}".format(e.errno, e.strerror)
+        output("({0}): {1}".format(e.errno, e.strerror) + '\n')
       continue
 
     html = BeautifulSoup(response.read())
@@ -45,7 +47,7 @@ def run(options):
         continue
       href = fullPath(url, link.get('href'));
       if options.extract == 'a':
-        print href
+        output(href + '\n')
       if href == None:
         continue
       if href not in visited and href not in qtl(queue):
@@ -57,6 +59,7 @@ def parse():
   parser.add_argument('-d', '--depth', help='How deep do you want to dig?', action='store', dest='depth', type=int, default=0)
   parser.add_argument('-v', '--verbose', help='Displays detailed ouput, i.e. things like depth, current base link...', action='store_true', default=False)
   parser.add_argument('-e', '--extract', choices=['a', 'img'], help="what to extract")
+  parser.add_argument('-w', '--write', help='Write to file', default=False)
 
 
   options = parser.parse_args()
