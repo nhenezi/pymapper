@@ -5,7 +5,7 @@ from validator import fullPath
 from bs4 import BeautifulSoup
 from argparse import ArgumentParser
 from collections import deque
-from pprint import pprint
+import sys
 
 
 def qtl(queue):
@@ -49,9 +49,12 @@ def run(options):
 def parse():
   parser = ArgumentParser(description='Website mapper')
   parser.add_argument('-t', help='start address', action='store', dest='target')
-  parser.add_argument('-d', help='depth', action='store', dest='depth', type=int)
+  parser.add_argument('-d', help='depth', action='store', dest='depth', type=int, default=3)
 
   options = parser.parse_args()
+  if options.target == None:
+    print "Invalid usage, try -h for help"
+    sys.exit()
   if options.target[-1] != '/':
     options.target += '/'
 
