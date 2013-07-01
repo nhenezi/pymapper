@@ -39,10 +39,13 @@ def run(options):
       continue
     info[url]['src'] = html
     info[url]['a'] = html.find_all('a')
+    info[url]['img'] = html.find_all('img')
     for link in info[url]['a']:
       if not link.get('href'):
         continue
       href = fullPath(url, link.get('href'));
+      if options.extract == 'a':
+        print href
       if href == None:
         continue
       if href not in visited and href not in qtl(queue):
@@ -53,6 +56,7 @@ def parse():
   parser.add_argument('-t', '--target', help='Starting address', action='store', dest='target')
   parser.add_argument('-d', '--depth', help='How deep do you want to dig?', action='store', dest='depth', type=int, default=0)
   parser.add_argument('-v', '--verbose', help='Displays detailed ouput, i.e. things like depth, current base link...', action='store_true', default=False)
+  parser.add_argument('-e', '--extract', choices=['a', 'img'], help="what to extract")
 
 
   options = parser.parse_args()
