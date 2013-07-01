@@ -22,13 +22,15 @@ def run(options):
 
   while queue:
     url, depth = queue.popleft()
-    print depth, "Visiting: ", url
+    if options.verbose == True:
+      print depth, "Visiting: ", url
     visited.append(url);
     info[url] = {}
     try:
       response = urllib2.urlopen(url)
     except urllib2.HTTPError as e:
-      print "({0}): {1}".format(e.errno, e.strerror)
+      if options.verbose == True:
+        print "({0}): {1}".format(e.errno, e.strerror)
       continue
 
     html = BeautifulSoup(response.read())
@@ -48,8 +50,10 @@ def run(options):
 
 def parse():
   parser = ArgumentParser(description='Website mapper')
-  parser.add_argument('-t', help='start address', action='store', dest='target')
-  parser.add_argument('-d', help='depth', action='store', dest='depth', type=int, default=3)
+  parser.add_argument('-t', '--target', help='Starting address', action='store', dest='target')
+  parser.add_argument('-d', '--depth', help='How deep do you want to dig?', action='store', dest='depth', type=int, default=0)
+  parser.add_argument('-v', '--verbose', help='Displays detailed ouput, i.e. things like depth, current base link...', action='store_true', default=False)
+
 
   options = parser.parse_args()
   if options.target == None:
