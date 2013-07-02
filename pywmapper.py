@@ -1,13 +1,12 @@
 #! /usr/bin/python
 
 import urllib2
-from validator import fullPath
-from bs4 import BeautifulSoup
-from argparse import ArgumentParser
-from collections import deque
-from writer import writer
 import sys
-
+from argparse import ArgumentParser
+from bs4 import BeautifulSoup
+from collections import deque
+from validator import fullPath
+from writer import writer
 
 def qtl(queue):
   '''Converts depth queue to list of urls
