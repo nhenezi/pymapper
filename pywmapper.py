@@ -42,6 +42,11 @@ def run(options):
     info[url]['src'] = html
     info[url]['a'] = html.find_all('a')
     info[url]['img'] = html.find_all('img')
+
+    for image in info[url]['img']:
+      href = fullPath(url, image['src'])
+      output(href + '\n')
+
     for link in info[url]['a']:
       if not link.get('href'):
         continue
