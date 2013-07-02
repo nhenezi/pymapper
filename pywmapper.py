@@ -18,44 +18,51 @@ def run(options):
   output = writer(options)
   maxDepth = options.depth
   queue = deque([(options.target, 0)])
-  info = {}
-  visited = []
+  info = {} # contains all scraped info
+  visited = [] # array of visited urls
+  scraped = {  # list of scraped elements; to avoid duplication
+    'a': [],
+    'img': [],
+  }
 
   while queue:
     url, depth = queue.popleft()
+    if depth > maxDepth:
+      break
+
     if options.verbose == True:
-      output(depth + " Visiting: " + url + '\n')
+      print str(depth) + " Visiting: " + url
     visited.append(url);
     info[url] = {}
     try:
       response = urllib2.urlopen(url)
     except urllib2.HTTPError as e:
       if options.verbose == True:
-        output("({0}): {1}".format(e.errno, e.strerror) + '\n')
+        print "({0}): {1}".format(e.errno, e.strerror)
       continue
 
     html = BeautifulSoup(response.read())
-
-    if depth >= maxDepth:
-      continue
     info[url]['src'] = html
     info[url]['a'] = html.find_all('a')
     info[url]['img'] = html.find_all('img')
 
-    for image in info[url]['img']:
-      href = fullPath(url, image['src'])
-      output(href + '\n')
+    if options.extract == 'img':
+      for image in info[url]['img']:
+        href = fullPath(url, image['src'])
+        if href != None and href not in scraped['img']:
+          scraped['img'].append(href)
+          output(href + '\n')
 
     for link in info[url]['a']:
       if not link.get('href'):
         continue
       href = fullPath(url, link.get('href'));
-      if options.extract == 'a':
-        output(href + '\n')
       if href == None:
         continue
+      if options.extract == 'a':
+        output(href + '\n')
       if href not in visited and href not in qtl(queue):
-        queue.append((href, depth));
+        queue.append((href, depth + 1));
 
 def parse():
   parser = ArgumentParser(description='Website mapper')
