@@ -24,4 +24,10 @@ DFS using links as nodes. Example usage: `./pymapper -t http://test.local/ -d 1 
 * `-w FILE, --write FILE` writes ouput to FILE
 
 
+## Dependencies
+
+* python 2.7
+* pip
+* virtualenv
+
 Released under MIT license, see [license.txt](https://github.com/nhenezi/pymapper/blob/master/license.txt) for more details
