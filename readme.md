@@ -34,7 +34,7 @@ DFS using links as nodes. Example usage: `./pymapper -t http://test.local/ -d 1 
 
 * Initialize virtualenv `virtualenv venv`
 * Activate virtualenv `source ./venv/bin/activate`
-* Install pip dependencies `pip install -re reqs.txt`
+* Install pip dependencies `pip install -r reqs.txt`
 * run pymapper `pyhon pymapper -h`
 
 Released under MIT license, see [license.txt](https://github.com/nhenezi/pymapper/blob/master/license.txt) for more details
